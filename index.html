@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Employee Leave System </title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- Google font (optional) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#fbf9ff;
+      --card:#ffffff;
+      --muted:#7b7b88;
+      --accent1: #ffd6e7; /* pastel pink */
+      --accent2: #e6f6ff; /* pastel blue */
+      --accent3: #fff1d6; /* pastel yellow */
+      --accent4: #e9fbe9; /* pastel green */
+      --primary: #6f46ff;
+      --glass: rgba(255,255,255,0.6);
+      --shadow: 0 8px 28px rgba(40,40,55,0.08);
+      --radius: 14px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:
+      radial-gradient(circle at 10% 10%, var(--accent1) 0%, transparent 14%),
+      radial-gradient(circle at 90% 80%, var(--accent2) 0%, transparent 18%),
+      var(--bg);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color: #121215;
+    }
+
+    .wrap{
+      max-width: 1100px;
+      margin: 28px auto;
+      padding: 20px;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom:18px;
+    }
+    .logo {
+      width:64px;height:64px;border-radius:14px;
+      background: linear-gradient(135deg, rgba(111,70,255,0.12), rgba(111,70,255,0.06));
+      display:grid;place-items:center;box-shadow:var(--shadow);
+      border: 1px solid rgba(111,70,255,0.08);
+    }
+    .logo svg { width:36px;height:36px; }
+    h1{font-size:20px;margin:0 0 2px;font-weight:600}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    .grid {
+      display:grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap:18px;
+      margin-top:18px;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.8), var(--card));
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+      border: 1px solid rgba(34,34,34,0.03);
+    }
+
+    .controls { display:flex; gap:12px; align-items:center; margin-top:10px; flex-wrap:wrap }
+    label { display:block; font-size:13px; color:#444; margin-bottom:6px; font-weight:500 }
+    input[type="text"], input[type="number"], input[type="date"]{
+      width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(20,20,30,0.06);
+      background: linear-gradient(180deg, #fff, #fbfbff);
+      outline:none; transition:box-shadow .18s, transform .12s;
+      font-size:14px;
+    }
+    input:focus{ box-shadow: 0 6px 18px rgba(111,70,255,0.06); transform: translateY(-1px) }
+
+    .btn {
+      padding:10px 14px; border-radius:10px; font-weight:600; cursor:pointer; border:0;
+      background: linear-gradient(90deg,var(--primary), #9a7dff); color:white; box-shadow: 0 8px 20px rgba(111,70,255,0.08);
+      transition:transform .12s, box-shadow .12s, opacity .12s;
+    }
+    .btn:hover{ transform: translateY(-2px) }
+    .btn.secondary{
+      background: transparent;
+      border:1px solid rgba(34,34,34,0.06);
+      color:#333; box-shadow:none; font-weight:600;
+    }
+
+    .two{ display:flex; gap:10px }
+    .muted{ color:var(--muted); font-size:13px }
+
+    table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:14px }
+    th, td{ text-align:left; padding:10px 8px; border-bottom:1px dashed rgba(34,34,34,0.04) }
+    th{ color:#555; font-weight:600; font-size:13px }
+    tr:last-child td{ border-bottom: none }
+
+    .msg{ padding:10px 12px; border-radius:10px; margin-top:10px; display:none }
+    .ok{ background: linear-gradient(90deg,#f2fff3,#e6fbe9); color:#0b5824; border:1px solid rgba(12,150,75,0.08) }
+    .err{ background: linear-gradient(90deg,#fff5f7,#ffeef0); color:#6a1b1b; border:1px solid rgba(255,100,120,0.06) }
+
+    /* small responsive */
+    @media (max-width:900px){
+      .grid{ grid-template-columns: 1fr; }
+      header{ gap:12px }
+      .logo{ width:56px;height:56px }
+    }
+
+    /* tiny helper for action button inside table */
+    .chip {
+      display:inline-block;padding:8px 10px;border-radius:999px;font-weight:600;
+      background: linear-gradient(90deg,#fff,#f9f9ff); border:1px solid rgba(34,34,34,0.04);
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo" aria-hidden="true">
+        <!-- simple leaf icon -->
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 21c6-6 6-12 18-18" stroke="#7f6bff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6.5 16.5c3-3 4-6 7-9" stroke="#ff8db6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Employee Leave System</h1>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <div class="muted" style="font-size:13px">Status:</div>
+        <div style="padding:6px 10px;border-radius:999px;background:var(--accent4);border:1px solid rgba(34,34,34,0.04);font-weight:700;color:#08622b">API running</div>
+      </div>
+    </header>
+
+    <main class="grid">
+      <!-- left column: add / employees -->
+      <div>
+        <div class="card">
+          <h3 style="margin:0 0 8px">Add Employee</h3>
+          <div style="gap:12px;display:grid">
+            <div>
+              <label for="emp_name">Name</label>
+              <input id="emp_name" type="text" placeholder="Write name here..." />
+            </div>
+            <div>
+              <label for="emp_balance">Total leave balance</label>
+              <input id="emp_balance" type="number" value="20" />
+            </div>
+            <div class="controls">
+              <button id="btnAdd" class="btn">Add Employee</button>
+              <button id="btnRefresh" class="btn secondary">Refresh List</button>
+              <div style="flex:1" />
+            </div>
+            <div id="addMsg" class="msg"></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+          <h3 style="margin:0 0 6px">Employees</h3>
+          <div id="employeesArea" class="muted" style="padding-top:6px"><em>Loading…</em></div>
+        </div>
+      </div>
+
+      <!-- right column: apply / leaves / summary -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card">
+          <h3 style="margin:0 0 8px">Apply Leave</h3>
+          <div style="display:grid;grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label for="apply_emp">Employee ID</label>
+              <input id="apply_emp" type="number" placeholder="1" />
+            </div>
+            <div>
+              <label for="apply_type">Leave Type</label>
+              <input id="apply_type" type="text" placeholder="Casual" value="Casual" />
+            </div>
+            <div>
+              <label for="apply_start">Start Date</label>
+              <input id="apply_start" type="date" />
+            </div>
+            <div>
+              <label for="apply_end">End Date</label>
+              <input id="apply_end" type="date" />
+            </div>
+          </div>
+          <div class="controls" style="margin-top:12px">
+            <button id="btnApply" class="btn">Apply</button>
+            <div style="flex:1"></div>
+          </div>
+          <div id="applyMsg" class="msg"></div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin:0 0 8px">Leaves</h3>
+          <div id="leavesArea" class="muted" style="padding-top:6px"><em>Loading…</em></div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin:0 0 8px">Monthly Summary</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <div style="flex:0.6">
+              <label>Employee ID</label>
+              <input id="sum_emp" type="number" value="1" />
+            </div>
+            <div style="flex:0.6">
+              <label>Month (1-12)</label>
+              <input id="sum_month" type="number" value="12" min="1" max="12" />
+            </div>
+            <div style="flex:0.8">
+              <label>Year</label>
+              <input id="sum_year" type="number" value="2025" />
+            </div>
+            <div style="flex-basis:100%;margin-top:6px">
+              <button id="btnSummary" class="btn">Show Summary</button>
+            </div>
+          </div>
+          <div id="summaryArea" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer style="margin-top:18px;text-align:center;color:var(--muted);font-size:13px">
+      Built with ❤️ • <span style="font-weight:600">Employee Leave System</span>
+    </footer>
+  </div>
+
+  <!-- JavaScript remains unchanged so API integration works -->
+  <script>
+    const API = 'http://127.0.0.1:5000';
+
+    function showMsg(el, text, ok=true) {
+      el.style.display = 'block';
+      el.textContent = text;
+      el.className = 'msg ' + (ok ? 'ok' : 'err');
+      setTimeout(()=>{ el.style.display='none'; }, 4200);
+    }
+
+    async function fetchJSON(url, opts) {
+      const r = await fetch(url, opts);
+      const ct = r.headers.get('content-type') || '';
+      if (!r.ok) {
+        let text = await r.text();
+        try { const j = JSON.parse(text); text = j.error || JSON.stringify(j); } catch(e){}
+        throw new Error(`${r.status} ${r.statusText}: ${text}`);
+      }
+      if (ct.includes('application/json')) return r.json();
+      return r.text();
+    }
+
+    async function loadEmployees(){
+      const area = document.getElementById('employeesArea');
+      area.innerHTML = 'Loading...';
+      try {
+        const list = await fetchJSON(API + '/employees');
+        if (!list.length) { area.innerHTML = '<em>No employees</em>'; return; }
+        let html = '<table><thead><tr><th>ID</th><th>Name</th><th>Balance</th></tr></thead><tbody>';
+        for (const e of list) html += `<tr><td>${e.employee_id}</td><td>${e.name}</td><td>${e.total_leave_balance}</td></tr>`;
+        html += '</tbody></table>';
+        area.innerHTML = html;
+      } catch(err){
+        area.innerHTML = `<div class="err">Error: ${err.message}</div>`;
+      }
+    }
+
+    async function loadLeaves(){
+      const area = document.getElementById('leavesArea');
+      area.innerHTML = 'Loading...';
+      try {
+        const list = await fetchJSON(API + '/leave');
+        if (!list.length) { area.innerHTML = '<em>No leaves</em>'; return; }
+        let html = '<table><thead><tr><th>ID</th><th>Emp</th><th>Type</th><th>Start</th><th>End</th><th>Days</th><th>Status</th><th>Action</th></tr></thead><tbody>';
+        for (const r of list) {
+          html += `<tr>
+            <td>${r.request_id}</td>
+            <td>${r.employee_id}</td>
+            <td>${r.leave_type}</td>
+            <td>${r.start_date}</td>
+            <td>${r.end_date}</td>
+            <td>${r.days}</td>
+            <td>${r.status}</td>
+            <td>
+              ${r.status === 'Pending' ? `<button data-id="${r.request_id}" class="chip btnApprove">Approve</button>` : ''}
+            </td>
+          </tr>`;
+        }
+        html += '</tbody></table>';
+        area.innerHTML = html;
+        // attach approve handlers
+        document.querySelectorAll('.btnApprove').forEach(btn=>{
+          btn.addEventListener('click', async () => {
+            const id = btn.getAttribute('data-id');
+            try {
+              await fetchJSON(API + `/leave/${id}`, {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({status:'Approved'})
+              });
+              showMsg(document.getElementById('applyMsg'), 'Leave approved', true);
+              loadLeaves(); loadEmployees();
+            } catch(e) {
+              showMsg(document.getElementById('applyMsg'), e.message, false);
+            }
+          });
+        });
+      } catch(err){
+        area.innerHTML = `<div class="err">Error: ${err.message}</div>`;
+      }
+    }
+
+    document.getElementById('btnAdd').addEventListener('click', async ()=>{
+      const name = document.getElementById('emp_name').value.trim();
+      const balance = document.getElementById('emp_balance').value;
+      if (!name) return showMsg(document.getElementById('addMsg'),'Name required',false);
+      try {
+        const res = await fetchJSON(API + '/employees', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({name, total_leave_balance: Number(balance)})
+        });
+        showMsg(document.getElementById('addMsg'),'Employee added: ID ' + res.employee_id, true);
+        loadEmployees();
+        document.getElementById('emp_name').value = '';
+      } catch(e){
+        showMsg(document.getElementById('addMsg'), e.message, false);
+      }
+    });
+
+    document.getElementById('btnRefresh').addEventListener('click', ()=>{ loadEmployees(); loadLeaves(); });
+
+    document.getElementById('btnApply').addEventListener('click', async ()=>{
+      const emp = Number(document.getElementById('apply_emp').value);
+      const type = document.getElementById('apply_type').value || 'Casual';
+      const start = document.getElementById('apply_start').value;
+      const end = document.getElementById('apply_end').value;
+      if (!emp || !start || !end) return showMsg(document.getElementById('applyMsg'),'Fill all fields',false);
+      try {
+        const res = await fetchJSON(API + '/leave', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({employee_id: emp, leave_type: type, start_date: start, end_date: end})
+        });
+        showMsg(document.getElementById('applyMsg'),'Leave requested: ID ' + res.request_id, true);
+        loadLeaves(); loadEmployees();
+      } catch(e){
+        showMsg(document.getElementById('applyMsg'), e.message, false);
+      }
+    });
+
+    document.getElementById('btnSummary').addEventListener('click', async ()=>{
+      const emp = Number(document.getElementById('sum_emp').value);
+      const month = Number(document.getElementById('sum_month').value);
+      const year = Number(document.getElementById('sum_year').value);
+      const area = document.getElementById('summaryArea');
+      area.innerHTML = 'Loading...';
+      try {
+        const data = await fetchJSON(`${API}/summary?employee_id=${emp}&month=${month}&year=${year}`);
+        if (!data.length) { area.innerHTML = '<em>No records</em>'; return; }
+        let html = '<table><thead><tr><th>ID</th><th>Type</th><th>Days</th><th>Status</th><th>Applied On</th></tr></thead><tbody>';
+        for (const r of data) html += `<tr><td>${r.request_id}</td><td>${r.leave_type}</td><td>${r.days}</td><td>${r.status}</td><td>${r.applied_on}</td></tr>`;
+        html += '</tbody></table>';
+        area.innerHTML = html;
+      } catch(e){
+        area.innerHTML = `<div class="err">Error: ${e.message}</div>`;
+      }
+    });
+
+    // initial load
+    loadEmployees();
+    loadLeaves();
+  </script>
+</body>
+</html>
