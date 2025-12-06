@@ -1,3 +1,12 @@
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Backend-Flask-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Database-MySQL-orange?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Frontend-HTML%2FCSS%2FJS-yellow?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Deployed%20On-Render%20%2B%20GitHub%20Pages-purple?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
+</p>
+
 # Employee Leave Tracking System
 
 A complete **full-stack Leave Tracking System** that enables organizations to efficiently manage employee leave requests.
