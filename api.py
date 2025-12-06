@@ -1,10 +1,30 @@
 # api.py
 from flask import Flask, request, jsonify
+from flask_cors import CORS
+import os
+import config
+
 from db_utils import (add_employee_db, list_employees_db,
                       apply_leave_db, list_requests_db,
                       update_leave_status_db, monthly_summary_db)
 
 app = Flask(__name__)
+CORS(app)  # allow frontend to call local API
+
+@app.errorhandler(400)
+def bad_request(e):
+    return jsonify({"error": "bad_request", "message": str(e)}), 400
+
+@app.errorhandler(404)
+def not_found(e):
+    return jsonify({"error": "not_found", "message": str(e)}), 404
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    # in debug mode let Flask handle it to show trace
+    if app.debug:
+        raise e
+    return jsonify({"error": "internal_server_error", "message": str(e)}), 500
 
 @app.route("/employees", methods=["POST"])
 def add_employee():
@@ -17,11 +37,14 @@ def add_employee():
         res = add_employee_db(name, int(balance))
         return jsonify(res), 201
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "internal_error", "message": str(e)}), 500
 
 @app.route("/employees", methods=["GET"])
 def list_employees():
-    return jsonify(list_employees_db())
+    try:
+        return jsonify(list_employees_db())
+    except Exception as e:
+        return jsonify({"error": "internal_error", "message": str(e)}), 500
 
 @app.route("/leave", methods=["POST"])
 def apply_leave():
@@ -36,15 +59,18 @@ def apply_leave():
         res = apply_leave_db(emp, ltype, start, end)
         return jsonify(res), 201
     except ValueError as ve:
-        return jsonify({"error": str(ve)}), 400
+        return jsonify({"error": "bad_request", "message": str(ve)}), 400
     except LookupError as le:
-        return jsonify({"error": str(le)}), 404
+        return jsonify({"error": "not_found", "message": str(le)}), 404
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "internal_error", "message": str(e)}), 500
 
 @app.route("/leave", methods=["GET"])
 def list_leaves():
-    return jsonify(list_requests_db())
+    try:
+        return jsonify(list_requests_db())
+    except Exception as e:
+        return jsonify({"error": "internal_error", "message": str(e)}), 500
 
 @app.route("/leave/<int:request_id>", methods=["POST"])
 def update_leave(request_id):
@@ -56,11 +82,11 @@ def update_leave(request_id):
         res = update_leave_status_db(request_id, status)
         return jsonify(res)
     except LookupError as le:
-        return jsonify({"error": str(le)}), 404
+        return jsonify({"error": "not_found", "message": str(le)}), 404
     except ValueError as ve:
-        return jsonify({"error": str(ve)}), 400
+        return jsonify({"error": "bad_request", "message": str(ve)}), 400
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "internal_error", "message": str(e)}), 500
 
 @app.route("/summary", methods=["GET"])
 def summary():
@@ -69,11 +95,16 @@ def summary():
     year = request.args.get("year", type=int)
     if not (emp and month):
         return jsonify({"error": "employee_id and month are required as query params"}), 400
+    if month < 1 or month > 12:
+        return jsonify({"error": "month must be 1..12"}), 400
     try:
         res = monthly_summary_db(emp, month, year)
         return jsonify(res)
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "internal_error", "message": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    host = getattr(config, "FLASK_HOST", "0.0.0.0")
+    port = getattr(config, "FLASK_PORT", 5000)
+    debug = getattr(config, "FLASK_DEBUG", True)
+    app.run(host=host, port=port, debug=debug)
