@@ -3,648 +3,382 @@
 <head>
   <meta charset="utf-8" />
   <title>Employee Leave System</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
-    :root{
-      --bg:#050816;
-      --bg-soft:#0b1020;
-      --card:#0f172a;
-      --card-soft:#111827;
-      --muted:#9ca3af;
-      --border:#1f2933;
-      --primary:#6366f1;
-      --primary-soft:rgba(99,102,241,0.14);
-      --accent1:#22c55e;
-      --accent2:#f97316;
-      --accent3:#e11d48;
-      --radius:18px;
-      --shadow:0 18px 45px rgba(15,23,42,0.65);
+    :root {
+      --bg: #fbf9ff;
+      --card: #ffffff;
+      --muted: #7b7b88;
+      --accent1: #ffd6e7;
+      --accent2: #e6f6ff;
+      --accent3: #fff1d6;
+      --accent4: #e9fbe9;
+      --primary: #6f46ff;
+      --shadow: 0 8px 28px rgba(40,40,55,0.08);
+      --radius: 14px;
     }
 
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{
-      height:100%;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(56,189,248,0.25) 0, transparent 55%),
-        radial-gradient(circle at 100% 0%, rgba(129,140,248,0.25) 0, transparent 55%),
-        radial-gradient(circle at 5% 90%, rgba(52,211,153,0.18) 0, transparent 55%),
-        var(--bg);
-      font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color:#e5e7eb;
+    /* Dark mode theme */
+    body.dark {
+      --bg: #121212;
+      --card: #1e1e1e;
+      --muted: #cccccc;
+      --primary: #bb86fc;
+      color: #fff;
     }
 
-    .wrap{
-      max-width:1200px;
-      margin:32px auto 40px;
-      padding:0 20px;
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      font-family: Inter, system-ui;
+      color: #222;
     }
 
-    header{
+    .wrap {
+      max-width: 1400px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    header {
       display:flex;
       align-items:center;
-      gap:18px;
-      margin-bottom:22px;
+      justify-content:space-between;
+      padding:10px 0;
     }
 
-    .logo{
-      width:60px;
-      height:60px;
-      border-radius:24px;
-      background:radial-gradient(circle at 20% 0%, #22d3ee 0, transparent 45%),
-                 radial-gradient(circle at 80% 90%, #a855f7 0, transparent 52%),
-                 #020617;
-      display:grid;
-      place-items:center;
-      box-shadow:var(--shadow);
-      border:1px solid rgba(148,163,184,0.3);
-    }
-    .logo svg{width:34px;height:34px;}
+    h1 { font-size:26px; margin:0; }
 
-    .title-block h1{
-      font-size:22px;
-      font-weight:600;
-      letter-spacing:0.01em;
-      margin-bottom:4px;
-    }
-    .title-block p{
-      font-size:13px;
-      color:var(--muted);
+    /* Card Style */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding:20px;
+      box-shadow: var(--shadow);
+      margin-bottom:20px;
     }
 
-    .status-chip{
-      margin-left:auto;
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .pill{
-      padding:6px 11px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.35);
-      font-size:11px;
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      background:rgba(15,23,42,0.9);
-      backdrop-filter:blur(10px);
-    }
-    .pill-dot{
-      width:7px;height:7px;border-radius:999px;background:#22c55e;
-      box-shadow:0 0 0 6px rgba(34,197,94,0.18);
-    }
-
-    main{
-      display:grid;
-      grid-template-columns:1.1fr 1.2fr;
-      gap:22px;
-      align-items:flex-start;
-    }
-
-    .card{
-      background:radial-gradient(circle at 0 0, rgba(148,163,184,0.06) 0, transparent 60%),
-                 radial-gradient(circle at 100% 100%, rgba(129,140,248,0.10) 0, transparent 60%),
-                 var(--card);
-      border-radius:var(--radius);
-      padding:18px 18px 16px;
-      border:1px solid rgba(31,41,55,0.9);
-      box-shadow:0 14px 40px rgba(15,23,42,0.85);
-      position:relative;
-      overflow:hidden;
-    }
-
-    .card h3{
-      font-size:15px;
-      font-weight:600;
-      letter-spacing:0.02em;
-      margin-bottom:3px;
-    }
-    .card-sub{
-      font-size:11px;
-      color:var(--muted);
-      margin-bottom:11px;
-    }
-
-    .card::before{
-      content:"";
-      position:absolute;
-      inset:-60%;
-      opacity:0;
-      background:radial-gradient(circle at 0 0, rgba(96,165,250,0.12) 0, transparent 55%);
-      transition:opacity .25s ease-out;
-      pointer-events:none;
-    }
-    .card:hover::before{opacity:1;}
-
-    label{
-      display:block;
-      font-size:12px;
-      color:#9ca3af;
-      margin-bottom:5px;
-      font-weight:500;
-    }
-
-    .field{
-      margin-bottom:10px;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="date"]{
-      width:100%;
-      padding:9px 11px;
+    .btn {
+      padding:10px 16px;
       border-radius:10px;
-      border:1px solid rgba(55,65,81,0.9);
-      background:linear-gradient(180deg,#020617,#020617);
-      color:#e5e7eb;
-      font-size:13px;
-      outline:none;
-      transition:border-color .18s, box-shadow .18s, transform .12s, background .18s;
-    }
-
-    input::placeholder{color:#6b7280;font-size:12px;}
-    input[type="date"]::-webkit-calendar-picker-indicator{
-      filter:invert(0.7);
-    }
-
-    input:focus{
-      border-color:var(--primary);
-      box-shadow:0 0 0 1px rgba(129,140,248,0.7), 0 12px 30px rgba(15,23,42,0.9);
-      transform:translateY(-1px);
-      background:#020617;
-    }
-
-    .controls{
-      display:flex;
-      gap:10px;
-      margin-top:8px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-
-    .btn{
-      padding:9px 14px;
-      border-radius:999px;
       border:none;
-      font-size:13px;
-      font-weight:600;
-      letter-spacing:0.02em;
-      background:radial-gradient(circle at 0 0,#22d3ee 0,transparent 55%),
-                 linear-gradient(90deg,#6366f1,#8b5cf6);
-      color:#f9fafb;
       cursor:pointer;
-      box-shadow:0 12px 30px rgba(79,70,229,0.65);
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      transition:transform .12s ease-out, box-shadow .12s ease-out, opacity .12s;
+      font-weight:600;
+      background: var(--primary);
+      color:white;
+      transition:0.2s;
     }
-    .btn span.icon{
-      font-size:15px;
-      transform:translateY(1px);
-    }
-    .btn:hover{
-      transform:translateY(-2px) translateZ(0);
-      box-shadow:0 18px 45px rgba(79,70,229,0.85);
-    }
-    .btn:active{
-      transform:translateY(0);
-      box-shadow:0 6px 18px rgba(15,23,42,0.9);
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn.secondary {
+      background: transparent;
+      border: 1px solid #9993;
+      color: #333;
     }
 
-    .btn.secondary{
-      background:rgba(15,23,42,0.95);
-      border:1px solid rgba(148,163,184,0.45);
-      color:#e5e7eb;
-      box-shadow:none;
-    }
-    .btn.secondary:hover{
-      box-shadow:0 12px 30px rgba(15,23,42,0.9);
+    body.dark .btn.secondary { color:#fff; border-color:#fff4; }
+
+    input, select {
+      width:100%;
+      padding:10px;
+      border-radius:10px;
+      border:1px solid #ddd;
+      margin-bottom:10px;
+      font-size:14px;
     }
 
-    .muted{color:var(--muted);font-size:12px;}
+    body.dark input, body.dark select {
+      background:#222;
+      color:white;
+      border-color:#444;
+    }
 
-    table{
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+
+    @media(max-width:900px){
+      .grid-2, .grid-4 { grid-template-columns:1fr; }
+    }
+
+    table {
       width:100%;
       border-collapse:collapse;
-      margin-top:8px;
-      font-size:12px;
+      margin-top:10px;
+    }
+    th,td {
+      padding:10px;
+      border-bottom:1px solid #eee;
     }
 
-    th,td{
-      text-align:left;
-      padding:8px 6px;
-      border-bottom:1px solid rgba(31,41,55,0.9);
-      white-space:nowrap;
-    }
+    body.dark th, body.dark td { border-color:#444; }
 
-    th{
-      color:#9ca3af;
-      font-weight:500;
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:0.06em;
-    }
+    .msg { padding:10px; border-radius:10px; display:none; margin-top:10px; }
+    .ok { background:#e4ffe4; color:#155b15; }
+    .err { background:#ffe5e5; color:#8a1f1f; }
 
-    tbody tr{
-      transition:background .15s ease-out, transform .12s ease-out;
-    }
-    tbody tr:hover{
-      background:rgba(15,23,42,0.92);
-      transform:translateY(-1px);
-    }
-
-    tr:last-child td{border-bottom:none;}
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      padding:3px 9px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:500;
-      letter-spacing:0.03em;
-      text-transform:uppercase;
-    }
-    .badge.pending{
-      background:rgba(250,204,21,0.08);
-      color:#eab308;
-      border:1px solid rgba(234,179,8,0.35);
-    }
-    .badge.approved{
-      background:rgba(34,197,94,0.09);
-      color:#22c55e;
-      border:1px solid rgba(34,197,94,0.35);
-    }
-    .badge.rejected{
-      background:rgba(248,113,113,0.09);
-      color:#fb7185;
-      border:1px solid rgba(248,113,113,0.35);
-    }
-
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      padding:7px 11px;
-      border-radius:999px;
-      background:rgba(15,23,42,0.95);
-      border:1px solid rgba(148,163,184,0.5);
-      font-size:11px;
-      font-weight:500;
-      cursor:pointer;
-      gap:6px;
-      transition:background .15s, border-color .15s, transform .12s, box-shadow .15s;
-    }
-    .chip::before{
-      content:"";
-      width:6px;height:6px;border-radius:999px;
-      background:#22c55e;
-    }
-    .chip:hover{
-      background:rgba(31,41,55,0.98);
-      border-color:rgba(129,140,248,0.8);
-      transform:translateY(-1px);
-      box-shadow:0 12px 30px rgba(15,23,42,0.9);
-    }
-
-    .msg{
-      padding:9px 11px;
-      border-radius:12px;
-      margin-top:9px;
-      display:none;
-      font-size:12px;
-      border:1px solid transparent;
-    }
-    .msg.ok{
-      background:rgba(22,163,74,0.12);
-      border-color:rgba(22,163,74,0.6);
-      color:#bbf7d0;
-    }
-    .msg.err{
-      background:rgba(220,38,38,0.12);
-      border-color:rgba(220,38,38,0.7);
-      color:#fecaca;
-    }
-
-    footer{
-      margin-top:20px;
-      text-align:center;
-      color:var(--muted);
-      font-size:11px;
-      opacity:0.9;
-    }
-
-    footer span.logo-text{
-      font-weight:600;
-      color:#e5e7eb;
-    }
-
-    @media (max-width:980px){
-      main{
-        grid-template-columns:1fr;
-      }
-      .wrap{
-        margin-top:22px;
-      }
-      header{
-        flex-wrap:wrap;
-      }
-      .status-chip{
-        margin-left:0;
-      }
-    }
-
-    @media (max-width:640px){
-      .card{
-        padding:14px 14px 12px;
-      }
-      th,td{
-        padding:7px 4px;
-      }
-      .wrap{
-        padding:0 12px;
-      }
-    }
+    body.dark .ok { background:#093; color:#fff; }
+    body.dark .err { background:#500; color:#fff; }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logo" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M3 21c6-6 6-12 18-18" stroke="#a5b4fc" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M6.5 16.5c3-3 4-6 7-9" stroke="#22d3ee" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <div class="title-block">
-        <h1>Employee Leave System</h1>
-        <p>Track employees, leave requests, and approvals in one place.</p>
-      </div>
-      <div class="status-chip">
-        <div class="pill">
-          <span class="pill-dot"></span>
-          <span>API running</span>
-        </div>
-      </div>
-    </header>
+<div class="wrap">
 
-    <main>
-      <!-- LEFT COLUMN -->
-      <section>
-        <div class="card">
-          <h3>Add Employee</h3>
-          <p class="card-sub">Create a new employee record with an initial leave balance.</p>
-          <div class="field">
-            <label for="emp_name">Name</label>
-            <input id="emp_name" type="text" placeholder="e.g. Aishwarya" />
-          </div>
-          <div class="field">
-            <label for="emp_balance">Total leave balance</label>
-            <input id="emp_balance" type="number" value="20" />
-          </div>
-          <div class="controls">
-            <button id="btnAdd" class="btn"><span class="icon">＋</span>Add Employee</button>
-            <button id="btnRefresh" class="btn secondary">Refresh data</button>
-          </div>
-          <div id="addMsg" class="msg"></div>
-        </div>
+  <header>
+    <h1>Employee Leave System</h1>
+    <button id="toggleDark" class="btn secondary">🌙 Dark Mode</button>
+  </header>
 
-        <div class="card" style="margin-top:14px;">
-          <h3>Employees</h3>
-          <p class="card-sub">Current employees and their remaining leave balance.</p>
-          <div id="employeesArea" class="muted" style="padding-top:4px"><em>Loading…</em></div>
-        </div>
-      </section>
-
-      <!-- RIGHT COLUMN -->
-      <section style="display:flex;flex-direction:column;gap:14px">
-        <div class="card">
-          <h3>Apply Leave</h3>
-          <p class="card-sub">Submit a new leave request for an employee.</p>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <div class="field">
-              <label for="apply_emp">Employee ID</label>
-              <input id="apply_emp" type="number" placeholder="e.g. 1" />
-            </div>
-            <div class="field">
-              <label for="apply_type">Leave Type</label>
-              <input id="apply_type" type="text" placeholder="Casual / Sick / Earned" value="Casual" />
-            </div>
-            <div class="field">
-              <label for="apply_start">Start Date</label>
-              <input id="apply_start" type="date" />
-            </div>
-            <div class="field">
-              <label for="apply_end">End Date</label>
-              <input id="apply_end" type="date" />
-            </div>
-          </div>
-          <div class="controls">
-            <button id="btnApply" class="btn"><span class="icon">📝</span>Apply Leave</button>
-          </div>
-          <div id="applyMsg" class="msg"></div>
-        </div>
-
-        <div class="card">
-          <h3>Leave Requests</h3>
-          <p class="card-sub">Review all leave requests and approve pending ones.</p>
-          <div id="leavesArea" class="muted" style="padding-top:4px"><em>Loading…</em></div>
-        </div>
-
-        <div class="card">
-          <h3>Monthly Summary</h3>
-          <p class="card-sub">View an employee’s leave activity for a specific month.</p>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
-            <div style="flex:0.6">
-              <label>Employee ID</label>
-              <input id="sum_emp" type="number" value="1" />
-            </div>
-            <div style="flex:0.6">
-              <label>Month (1–12)</label>
-              <input id="sum_month" type="number" value="12" min="1" max="12" />
-            </div>
-            <div style="flex:0.8">
-              <label>Year</label>
-              <input id="sum_year" type="number" value="2025" />
-            </div>
-            <div style="flex-basis:100%;margin-top:4px">
-              <button id="btnSummary" class="btn secondary">Show Summary</button>
-            </div>
-          </div>
-          <div id="summaryArea" style="margin-top:8px"></div>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      Built with ❤️ • <span class="logo-text">Employee Leave System</span>
-    </footer>
+  <!-- DASHBOARD SUMMARY -->
+  <div class="grid-4">
+    <div class="card"><h2 id="dashEmployees">0</h2><p>Total Employees</p></div>
+    <div class="card"><h2 id="dashLeaves">0</h2><p>Total Leave Requests</p></div>
+    <div class="card"><h2 id="dashApproved">0</h2><p>Approved</p></div>
+    <div class="card"><h2 id="dashPending">0</h2><p>Pending</p></div>
   </div>
 
-  <script>
-    const API = 'https://employee-leave-system-x9i9.onrender.com';
+  <div class="grid-2">
 
-    function showMsg(el, text, ok=true) {
-      el.style.display = 'block';
-      el.textContent = text;
-      el.className = 'msg ' + (ok ? 'ok' : 'err');
-      setTimeout(()=>{ el.style.display='none'; }, 4200);
-    }
+    <!-- LEFT SIDE -->
+    <div>
+      <div class="card">
+        <h3>Add Employee</h3>
+        <input id="emp_name" type="text" placeholder="Employee Name">
+        <input id="emp_balance" type="number" value="20">
+        <button id="btnAdd" class="btn">Add Employee</button>
+        <div id="addMsg" class="msg"></div>
+      </div>
 
-    async function fetchJSON(url, opts) {
-      const r = await fetch(url, opts);
-      const ct = r.headers.get('content-type') || '';
-      if (!r.ok) {
-        let text = await r.text();
-        try { const j = JSON.parse(text); text = j.error || JSON.stringify(j); } catch(e){}
-        throw new Error(`${r.status} ${r.statusText}: ${text}`);
-      }
-      if (ct.includes('application/json')) return r.json();
-      return r.text();
-    }
+      <div class="card">
+        <h3>Employees</h3>
+        <input id="searchEmp" type="text" placeholder="Search employee...">
+        <div id="employeesArea"><em>Loading...</em></div>
+      </div>
+    </div>
 
-    function statusBadge(status) {
-      const lower = (status || '').toLowerCase();
-      if (lower === 'approved') return '<span class="badge approved">Approved</span>';
-      if (lower === 'rejected') return '<span class="badge rejected">Rejected</span>';
-      return '<span class="badge pending">Pending</span>';
-    }
+    <!-- RIGHT SIDE -->
+    <div>
+      <div class="card">
+        <h3>Apply Leave</h3>
+        <input id="apply_emp" type="number" placeholder="Employee ID">
+        <input id="apply_type" type="text" placeholder="Leave Type" value="Casual">
+        <input id="apply_start" type="date">
+        <input id="apply_end" type="date">
+        <button id="btnApply" class="btn">Apply</button>
+        <div id="applyMsg" class="msg"></div>
+      </div>
 
-    async function loadEmployees(){
-      const area = document.getElementById('employeesArea');
-      area.innerHTML = 'Loading...';
-      try {
-        const list = await fetchJSON(API + '/employees');
-        if (!list.length) { area.innerHTML = '<em>No employees</em>'; return; }
-        let html = '<div style="overflow-x:auto;"><table><thead><tr><th>ID</th><th>Name</th><th>Balance</th></tr></thead><tbody>';
-        for (const e of list) {
-          html += `<tr><td>${e.employee_id}</td><td>${e.name}</td><td>${e.total_leave_balance}</td></tr>`;
-        }
-        html += '</tbody></table></div>';
-        area.innerHTML = html;
-      } catch(err){
-        area.innerHTML = `<div class="msg err" style="display:block">Error: ${err.message}</div>`;
-      }
-    }
+      <div class="card">
+        <h3>Leaves</h3>
+        <select id="filterLeave">
+          <option value="">All</option>
+          <option>Pending</option>
+          <option>Approved</option>
+          <option>Rejected</option>
+        </select>
+        <div id="leavesArea"><em>Loading...</em></div>
+      </div>
 
-    async function loadLeaves(){
-      const area = document.getElementById('leavesArea');
-      area.innerHTML = 'Loading...';
-      try {
-        const list = await fetchJSON(API + '/leave');
-        if (!list.length) { area.innerHTML = '<em>No leaves yet</em>'; return; }
-        let html = '<div style="overflow-x:auto;"><table><thead><tr><th>ID</th><th>Emp</th><th>Type</th><th>Start</th><th>End</th><th>Days</th><th>Status</th><th>Action</th></tr></thead><tbody>';
-        for (const r of list) {
-          html += `<tr>
-            <td>${r.request_id}</td>
-            <td>${r.employee_id}</td>
-            <td>${r.leave_type}</td>
-            <td>${r.start_date}</td>
-            <td>${r.end_date}</td>
-            <td>${r.days}</td>
-            <td>${statusBadge(r.status)}</td>
-            <td>
-              ${r.status === 'Pending' ? `<button data-id="${r.request_id}" class="chip btnApprove">Approve</button>` : ''}
-            </td>
-          </tr>`;
-        }
-        html += '</tbody></table></div>';
-        area.innerHTML = html;
+      <div class="card">
+        <h3>Monthly Summary</h3>
+        <input id="sum_emp" type="number" placeholder="Employee ID" value="1">
+        <input id="sum_month" type="number" value="12" min="1" max="12">
+        <input id="sum_year" type="number" value="2025">
+        <button id="btnSummary" class="btn">Show Summary</button>
+        <div id="summaryArea"></div>
+        <canvas id="leaveChart" height="200"></canvas>
+      </div>
+    </div>
 
-        document.querySelectorAll('.btnApprove').forEach(btn=>{
-          btn.addEventListener('click', async () => {
-            const id = btn.getAttribute('data-id');
-            try {
-              await fetchJSON(API + `/leave/${id}`, {
-                method: 'POST',
-                headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({status:'Approved'})
-              });
-              showMsg(document.getElementById('applyMsg'), 'Leave approved', true);
-              loadLeaves(); 
-              loadEmployees();
-            } catch(e) {
-              showMsg(document.getElementById('applyMsg'), e.message, false);
-            }
-          });
-        });
-      } catch(err){
-        area.innerHTML = `<div class="msg err" style="display:block">Error: ${err.message}</div>`;
-      }
-    }
+  </div>
 
-    document.getElementById('btnAdd').addEventListener('click', async ()=>{
-      const name = document.getElementById('emp_name').value.trim();
-      const balance = document.getElementById('emp_balance').value;
-      if (!name) return showMsg(document.getElementById('addMsg'),'Name required',false);
-      try {
-        const res = await fetchJSON(API + '/employees', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({name, total_leave_balance: Number(balance)})
-        });
-        showMsg(document.getElementById('addMsg'),'Employee added: ID ' + res.employee_id, true);
-        loadEmployees();
-        document.getElementById('emp_name').value = '';
-      } catch(e){
-        showMsg(document.getElementById('addMsg'), e.message, false);
-      }
+</div>
+
+<script>
+const API = "https://employee-leave-system-x9i9.onrender.com";
+
+function showMsg(el, text, ok=true){
+  el.style.display = "block";
+  el.textContent = text;
+  el.className = "msg " + (ok ? "ok" : "err");
+  setTimeout(() => el.style.display="none", 3000);
+}
+
+async function fetchJSON(url, opts={}){
+  const r = await fetch(url, opts);
+  if(!r.ok){
+    let t = await r.text();
+    throw new Error(t);
+  }
+  return r.json();
+}
+
+/* DARK MODE */
+document.getElementById("toggleDark").addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+});
+
+/* LOAD EMPLOYEES */
+async function loadEmployees(){
+  const area = document.getElementById("employeesArea");
+  const list = await fetchJSON(API + "/employees");
+  if (!list.length) return area.innerHTML = "<em>No employees</em>";
+
+  let html = `<table><thead><tr>
+    <th>ID</th><th>Name</th><th>Balance</th></tr></thead><tbody>`;
+  for (const e of list)
+    html += `<tr><td>${e.employee_id}</td><td>${e.name}</td><td>${e.total_leave_balance}</td></tr>`;
+  html += `</tbody></table>`;
+  area.innerHTML = html;
+
+  // SEARCH
+  document.getElementById("searchEmp").addEventListener("input", e => {
+    const val = e.target.value.toLowerCase();
+    document.querySelectorAll("#employeesArea tbody tr").forEach(row=>{
+      row.style.display = row.textContent.toLowerCase().includes(val) ? "" : "none";
     });
+  });
+}
 
-    document.getElementById('btnRefresh').addEventListener('click', ()=>{
-      loadEmployees();
-      loadLeaves();
+/* LOAD LEAVES */
+async function loadLeaves(){
+  const area = document.getElementById("leavesArea");
+  const list = await fetchJSON(API + "/leave");
+
+  let html = `<table><thead><tr>
+  <th>ID</th><th>Emp</th><th>Type</th><th>Start</th>
+  <th>End</th><th>Days</th><th>Status</th></tr></thead><tbody>`;
+
+  for (const r of list){
+    html += `<tr>
+    <td>${r.request_id}</td>
+    <td>${r.employee_id}</td>
+    <td>${r.leave_type}</td>
+    <td>${r.start_date}</td>
+    <td>${r.end_date}</td>
+    <td>${r.days}</td>
+    <td>${r.status}</td></tr>`;
+  }
+
+  html += `</tbody></table>`;
+  area.innerHTML = html;
+
+  // Filter
+  document.getElementById("filterLeave").addEventListener("change", e => {
+    const value = e.target.value;
+    document.querySelectorAll("#leavesArea tbody tr").forEach(row=>{
+      const status = row.children[6].textContent;
+      row.style.display = (value === "" || status === value) ? "" : "none";
     });
+  });
+}
 
-    document.getElementById('btnApply').addEventListener('click', async ()=>{
-      const emp = Number(document.getElementById('apply_emp').value);
-      const type = document.getElementById('apply_type').value || 'Casual';
-      const start = document.getElementById('apply_start').value;
-      const end = document.getElementById('apply_end').value;
-      if (!emp || !start || !end) return showMsg(document.getElementById('applyMsg'),'Fill all fields',false);
-      try {
-        const res = await fetchJSON(API + '/leave', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({employee_id: emp, leave_type: type, start_date: start, end_date: end})
-        });
-        showMsg(document.getElementById('applyMsg'),'Leave requested: ID ' + res.request_id, true);
-        loadLeaves(); 
-        loadEmployees();
-      } catch(e){
-        showMsg(document.getElementById('applyMsg'), e.message, false);
-      }
+/* ADD EMPLOYEE */
+document.getElementById("btnAdd").addEventListener("click", async () => {
+  const name = document.getElementById("emp_name").value;
+  const bal = document.getElementById("emp_balance").value;
+  const box = document.getElementById("addMsg");
+  if (!name) return showMsg(box, "Name required", false);
+
+  try {
+    await fetchJSON(API+"/employees", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ name, total_leave_balance:Number(bal) })
     });
-
-    document.getElementById('btnSummary').addEventListener('click', async ()=>{
-      const emp = Number(document.getElementById('sum_emp').value);
-      const month = Number(document.getElementById('sum_month').value);
-      const year = Number(document.getElementById('sum_year').value);
-      const area = document.getElementById('summaryArea');
-      area.innerHTML = 'Loading...';
-      try {
-        const data = await fetchJSON(`${API}/summary?employee_id=${emp}&month=${month}&year=${year}`);
-        if (!data.length) { area.innerHTML = '<em>No records for this period</em>'; return; }
-        let html = '<div style="overflow-x:auto;"><table><thead><tr><th>ID</th><th>Type</th><th>Days</th><th>Status</th><th>Applied On</th></tr></thead><tbody>';
-        for (const r of data) {
-          html += `<tr>
-            <td>${r.request_id}</td>
-            <td>${r.leave_type}</td>
-            <td>${r.days}</td>
-            <td>${statusBadge(r.status)}</td>
-            <td>${r.applied_on}</td>
-          </tr>`;
-        }
-        html += '</tbody></table></div>';
-        area.innerHTML = html;
-      } catch(e){
-        area.innerHTML = `<div class="msg err" style="display:block">Error: ${e.message}</div>`;
-      }
-    });
-
-    // initial load
+    showMsg(box, "Employee added", true);
     loadEmployees();
+    updateDashboard();
+  } catch(e){ showMsg(box, e.message, false); }
+});
+
+/* APPLY LEAVE */
+document.getElementById("btnApply").addEventListener("click", async () => {
+  const emp = Number(document.getElementById("apply_emp").value);
+  const type = document.getElementById("apply_type").value;
+  const start = document.getElementById("apply_start").value;
+  const end = document.getElementById("apply_end").value;
+  const box = document.getElementById("applyMsg");
+  if (!emp || !start || !end) return showMsg(box,"Fill all fields",false);
+
+  try {
+    await fetchJSON(API+"/leave",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ employee_id:emp, leave_type:type, start_date:start, end_date:end })
+    });
+    showMsg(box, "Leave applied", true);
     loadLeaves();
-  </script>
+    updateDashboard();
+  } catch(e){ showMsg(box,e.message,false); }
+});
+
+/* SUMMARY + CHART */
+let chartInstance = null;
+
+document.getElementById("btnSummary").addEventListener("click", async ()=>{
+  const emp = document.getElementById("sum_emp").value;
+  const m = document.getElementById("sum_month").value;
+  const y = document.getElementById("sum_year").value;
+  const area = document.getElementById("summaryArea");
+
+  const data = await fetchJSON(`${API}/summary?employee_id=${emp}&month=${m}&year=${y}`);
+
+  if(!data.length){ area.innerHTML="<em>No records</em>"; return; }
+
+  let html = "<table><thead><tr><th>ID</th><th>Type</th><th>Days</th><th>Status</th></tr></thead><tbody>";
+  for(const r of data)
+    html += `<tr><td>${r.request_id}</td><td>${r.leave_type}</td><td>${r.days}</td><td>${r.status}</td></tr>`;
+  html += "</tbody></table>";
+  area.innerHTML = html;
+
+  // Chart
+  const ctx = document.getElementById('leaveChart').getContext("2d");
+  const labels = data.map(r => r.leave_type);
+  const values = data.map(r => r.days);
+
+  if(chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(ctx,{
+    type:"bar",
+    data:{
+      labels,
+      datasets:[{
+        label:"Leave Days",
+        data:values
+      }]
+    }
+  });
+});
+
+/* DASHBOARD CARDS */
+async function updateDashboard(){
+  const emps = await fetchJSON(API+"/employees");
+  const leaves = await fetchJSON(API+"/leave");
+
+  document.getElementById("dashEmployees").textContent = emps.length;
+  document.getElementById("dashLeaves").textContent = leaves.length;
+
+  document.getElementById("dashApproved").textContent =
+    leaves.filter(l => l.status==="Approved").length;
+
+  document.getElementById("dashPending").textContent =
+    leaves.filter(l => l.status==="Pending").length;
+}
+
+/* INITIAL LOAD */
+loadEmployees();
+loadLeaves();
+updateDashboard();
+</script>
+
 </body>
 </html>
