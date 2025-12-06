@@ -103,7 +103,9 @@ employee-leave-system/
 ├── db_utils.py           # MySQL queries + business rules
 ├── config_example.py     # Safe example DB config
 ├── config.py             # Local DB config (ignored by Git)
-├── index.html            # Frontend UI 
+├── index.html            # Frontend UI
+├── style.css
+├── script.js
 ├── database.sql          # MySQL schema
 ├── requirements.txt      # Python dependencies
 ├── main.py               # Optional backend runner
