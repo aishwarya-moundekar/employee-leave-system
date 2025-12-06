@@ -1,53 +1,87 @@
 # Employee Leave Tracking System
 
-A full-stack application to manage employee leave requests with a Flask backend, MySQL database, and a modern HTML/CSS/JavaScript frontend.
+A complete **full-stack Leave Tracking System** that enables organizations to efficiently manage employee leave requests.
 
-This project demonstrates backend API development, SQL schema design, business rules implementation, and seamless frontend–backend integration.
+The backend is built using **Flask (Python)** and **MySQL**, while the frontend is a UI built using **HTML, CSS, and JavaScript**.
+
+This project highlights:
+
+* RESTful API development
+* Secure & scalable SQL schema design
+* Business rule enforcement (validations, leave calculations, approvals)
+* Fully integrated frontend ↔ backend workflow
+* Deployment on **GitHub Pages (UI)** and **Render (API)**
+
+This project demonstrates skills in:
+
+✅ API development
+✅ SQL schema design
+✅ Business logic implementation
+✅ Full frontend–backend integration
+✅ Deployment on GitHub Pages & Render
 
 ---
 
-## 📌 Features
+## 🌐 Live Demo
+
+| Component                   | Link                                                                                                                            |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Frontend (GitHub Pages)** | 🔗 [https://aishwarya-moundekar.github.io/employee-leave-system/](https://aishwarya-moundekar.github.io/employee-leave-system/) |
+| **Backend API (Render)**    | 🔗 [https://employee-leave-system-x9i9.onrender.com](https://employee-leave-system-x9i9.onrender.com)                           |
+
+---
+
+## ✨ Features
 
 ### 👥 Employee Management
 
 * Add new employees
 * View employee directory
-* Track leave balances
+* Real-time leave balance tracking
 
 ### 📝 Leave Requests
 
 * Apply for leave
-* Validate date ranges
-* Prevent overlapping approved leave dates
-* Check available leave balance before applying
+* Automatic leave day calculation
+* Prevent overlapping approved leaves
+* Validates date ranges
 
-### ✔️ Approvals
+### ✔️ Leave Approvals
 
-* Approve / Reject leave
-* Automatically deduct approved leave balance
+* Approve or Reject leave
+* Auto-deduct employee leave balance
 * Status lifecycle: **Pending → Approved / Rejected**
 
-### 📅 Monthly Summary
+### 📅 Monthly Reports
 
-* View an employee’s monthly leave activity
-* Useful for HR audits and reporting
+* Fetch monthly leave history for any employee
+* Useful for HR audits & payroll integration
 
-### 🌐 Frontend UI
+### 🎨 Modern UI (Glassy, Animated, Neon)
 
-* Fully responsive design
-* Clean and modern look
-* Connects to the Flask API using fetch()
+* Search & filtering
+* Charts showing Pending / Approved / Rejected leaves
+
+---
+
+## 📸 Screenshot
+
+### **Dashboard**
+
+![Dashboard](dashboard.png)
+
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer    | Technologies          |
-| -------- | --------------------- |
-| Backend  | Python, Flask         |
-| Database | MySQL                 |
-| Frontend | HTML, CSS, JavaScript |
-| Tools    | Git, GitHub           |
+| Layer          | Technologies                    |
+| -------------- | ------------------------------- |
+| **Backend**    | Python, Flask                   |
+| **Database**   | MySQL                           |
+| **Frontend**   | HTML, CSS, JavaScript           |
+| **Deployment** | GitHub Pages (UI), Render (API) |
+| **Tools**      | Git, GitHub                     |
 
 ---
 
@@ -56,22 +90,23 @@ This project demonstrates backend API development, SQL schema design, business r
 ```
 employee-leave-system/
 │
-├── api.py               # Flask API routes
-├── db_utils.py          # Database operations
-├── main.py              # Optional CLI tool for testing
-├── index.html           # Frontend UI
-├── database.sql         # MySQL schema
-├── requirements.txt     # Python dependencies
-├── config_example.py    # Example config file
-├── .gitignore           # Ignored files (including config.py)
-└── README.md            # Project documentation
+├── api.py                # Flask API routes
+├── db_utils.py           # MySQL queries + business rules
+├── config_example.py     # Safe example DB config
+├── config.py             # Local DB config (ignored by Git)
+├── index.html            # Frontend UI 
+├── database.sql          # MySQL schema
+├── requirements.txt      # Python dependencies
+├── main.py               # Optional backend runner
+├── test_db.py            # DB connection test
+└── README.md             # Documentation
 ```
 
 ---
 
 ## ⚙️ Setup Instructions
 
-### 1️⃣ Install Dependencies
+### 1️⃣ Install Python Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -81,22 +116,18 @@ pip install -r requirements.txt
 
 ### 2️⃣ Create the MySQL Database
 
-Run:
-
 ```bash
 mysql -u root -p < database.sql
 ```
 
 This creates:
 
-* `employees` table
-* `leave_requests` table
+* `employees`
+* `leave_requests`
 
 ---
 
-### 3️⃣ Create Local `config.py` (DO NOT upload to GitHub)
-
-Inside your project folder, create:
+### 3️⃣ Create `config.py` (This stays local)
 
 ```python
 DB_CONFIG = {
@@ -107,8 +138,8 @@ DB_CONFIG = {
 }
 ```
 
-> ⚠️ Do NOT commit this file.
-> It is ignored by `.gitignore` to protect your credentials.
+⚠️ **DO NOT upload this file to GitHub.**
+Your `.gitignore` already protects it.
 
 ---
 
@@ -118,7 +149,7 @@ DB_CONFIG = {
 python api.py
 ```
 
-Your API is now running at:
+Your API will run at:
 
 ```
 http://127.0.0.1:5000
@@ -128,13 +159,13 @@ http://127.0.0.1:5000
 
 ### 5️⃣ Open the Frontend
 
-Open `index.html` in your browser.
-It will automatically connect to the backend and allow you to:
+Just open:
 
-* Add employees
-* Apply leave
-* Approve leave
-* View summaries
+```
+index.html
+```
+
+The page will auto-connect to the backend API.
 
 ---
 
@@ -151,53 +182,66 @@ It will automatically connect to the backend and allow you to:
 
 ### 📝 Leave Requests
 
-| Method | Endpoint | Description             |
-| ------ | -------- | ----------------------- |
-| POST   | `/leave` | Apply for leave         |
-| GET    | `/leave` | View all leave requests |
+| Method | Endpoint | Description         |
+| ------ | -------- | ------------------- |
+| POST   | `/leave` | Apply leave         |
+| GET    | `/leave` | List leave requests |
 
 ---
 
 ### ✔️ Approvals
 
-| Method | Endpoint              | Description            |
-| ------ | --------------------- | ---------------------- |
-| POST   | `/leave/<request_id>` | Approve / Reject leave |
+| Method | Endpoint      | Description            |
+| ------ | ------------- | ---------------------- |
+| POST   | `/leave/<id>` | Approve / Reject leave |
+
+Sample Body:
+
+```json
+{ "status": "Approved" }
+```
 
 ---
 
 ### 📅 Monthly Summary
 
-| Method | Endpoint                                    | Description     |
-| ------ | ------------------------------------------- | --------------- |
-| GET    | `/summary?employee_id=1&month=12&year=2025` | Monthly summary |
+```
+GET /summary?employee_id=1&month=12&year=2025
+```
+
+Returns all leaves for that month.
 
 ---
 
-## 🧠 Business Logic Implemented
+## 🧠 Business Logic Highlights
 
-* Validate start and end dates
-* Calculate leave days automatically
-* Detect overlapping approved leaves
-* Check employee leave balance
-* Deduct balance upon approval
-* Clean JSON error responses
-* Safe database handling (commit, rollback, close connections)
+* ✔️ Auto-calculates leave days
+* ✔️ Blocks overlapping leave ranges
+* ✔️ Deducts balance only on approval
+* ✔️ Clean JSON error responses
+* ✔️ SQL transactions (safe commit/rollback)
+* ✔️ Centralized business logic in `db_utils.py`
+
+---
+
+## 🎨 UI Features
+
+* Animated floating dashboard
+* Search + filtering
+* Status badges
+* Bar chart visualization
+* Fully responsive
 
 ---
 
 ## 🎯 Learning Outcomes
 
-This project demonstrates:
-
-* Backend API design with Flask
-* SQL queries, joins, and transactions
-* Clean separation of logic (`db_utils` vs `api`)
-* Frontend integration using fetch API
-* Secure handling of config files
-* Building a complete end-to-end system
-
-Ideal for resumes, GitHub portfolio, and interviews.
+* Full-stack software development
+* API architecture
+* SQL & transactional logic
+* State management
+* Frontend engineering
+* Deployment workflows
 
 ---
 
@@ -210,5 +254,5 @@ For major changes, please open an issue first.
 
 ## 📄 License
 
-This project is licensed under the MIT License.
-Copyright © 2025 Aishwarya Moundekar.
+MIT License
+© 2025 Aishwarya Moundekar
