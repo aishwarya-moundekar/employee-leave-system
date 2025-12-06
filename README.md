@@ -24,10 +24,10 @@ This project highlights:
 This project demonstrates skills in:
 
 - ✅ API development
-*✅ SQL schema design
-*✅ Business logic implementation
-*✅ Full frontend–backend integration
-*✅ Deployment on GitHub Pages & Render
+* ✅ SQL schema design
+* ✅ Business logic implementation
+* ✅ Full frontend–backend integration
+* ✅ Deployment on GitHub Pages & Render
 
 ---
 
