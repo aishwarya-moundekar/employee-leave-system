@@ -1,10 +1,12 @@
 # api.py
 from flask import Flask, request, jsonify
+from flask_cors import CORS   # ⭐ ADD THIS
 from db_utils import (add_employee_db, list_employees_db,
                       apply_leave_db, list_requests_db,
                       update_leave_status_db, monthly_summary_db)
 
 app = Flask(__name__)
+CORS(app)  # ⭐ ADD THIS — allows your GitHub Pages frontend to access API
 
 @app.route("/employees", methods=["POST"])
 def add_employee():
