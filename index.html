@@ -3,238 +3,216 @@
 <head>
   <meta charset="utf-8" />
   <title>Employee Leave System</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --bg: #fbf9ff;
-      --card: #ffffff;
-      --muted: #7b7b88;
-
-      --accent1: #ffd6e7;
-      --accent2: #e6f6ff;
-      --accent3: #fff1d6;
-      --accent4: #e9fbe9;
-
-      --primary: #6f46ff;
-
-      --shadow: 0 8px 28px rgba(40,40,55,0.08);
-      --radius: 14px;
+    :root{
+      --bg:#fbf9ff;
+      --card:#ffffffd9; /* semi-transparent for glass effect */
+      --muted:#7b7b88;
+      --accent1:#ffd6e7;
+      --accent2:#e6f6ff;
+      --accent3:#fff1d6;
+      --accent4:#e9fbe9;
+      --primary:#6f46ff;
+      --shadow:0 10px 35px rgba(50,50,70,0.12);
+      --radius:16px;
+      --glass-border:1px solid rgba(255,255,255,0.5);
+      --glass-blur: blur(14px);
     }
 
-    body.dark {
-      --bg: #141218;
-      --card: #1d1b23;
-      --muted: #c7c3d9;
-      --primary: #a78bfa;
-    }
+    *{box-sizing:border-box;}
 
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
+    body{
+      margin:0;
       background:
-        radial-gradient(circle at 10% 10%, var(--accent1) 0%, transparent 18%),
-        radial-gradient(circle at 90% 80%, var(--accent2) 0%, transparent 20%),
+        radial-gradient(circle at 10% 10%, var(--accent1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 90%, var(--accent2) 0%, transparent 22%),
         var(--bg);
-      font-family: Inter, system-ui;
-      color: #222;
-      transition: background 0.3s ease;
+      font-family: Inter, sans-serif;
+      color:#222;
+      -webkit-font-smoothing: antialiased;
     }
 
-    body.dark { color: #eee; }
-
-    .wrap {
-      max-width: 1400px;
-      margin: auto;
-      padding: 20px;
+    .wrap{
+      max-width:1100px;
+      margin:auto;
+      padding:22px;
     }
 
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 20px;
+    header{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom:20px;
     }
 
-    h1 {
-      margin: 0;
-      font-size: 28px;
-      font-weight: 700;
+    .logo{
+      width:68px;height:68px;
+      border-radius:18px;
+      background:linear-gradient(135deg, rgba(111,70,255,0.18), rgba(111,70,255,0.08));
+      backdrop-filter: var(--glass-blur);
+      border:var(--glass-border);
+      display:grid;place-items:center;
+      box-shadow:var(--shadow);
     }
 
-    .toggle-dark {
-      cursor: pointer;
-      padding: 10px 14px;
-      border-radius: 10px;
-      background: linear-gradient(90deg,#333,#555);
-      color: white;
-      font-weight: 600;
-      border: none;
-      transition: 0.2s ease;
-    }
+    .logo svg{width:40px;height:40px;}
 
-    .toggle-dark:hover { transform: translateY(-2px); }
+    h1{margin:0;font-size:24px;font-weight:700;}
 
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
+    main.grid{
+      display:grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap:20px;
     }
 
     @media(max-width:900px){
-      .grid-2 { grid-template-columns: 1fr; }
+      main.grid{ grid-template-columns:1fr; }
     }
 
-    .card {
-      background: linear-gradient(180deg,#ffffffdd,#ffffff);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 20px;
-      border: 1px solid rgba(50,50,70,0.05);
-      backdrop-filter: blur(6px);
-      transition: 0.3s ease;
+    .card{
+      background:var(--card);
+      backdrop-filter: var(--glass-blur);
+      border:var(--glass-border);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow);
     }
 
-    body.dark .card {
-      background: #1e1c27;
-      border-color: #333;
+    label{
+      font-size:13px;
+      margin-bottom:4px;
+      display:block;
+      font-weight:600;
     }
 
-    .btn {
-      padding: 10px 18px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      background: linear-gradient(90deg,var(--primary), #9a7dff);
-      color: white;
-      box-shadow: 0 8px 20px rgba(111,70,255,0.1);
-      transition: 0.2s ease;
+    input{
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(0,0,0,0.08);
+      background:#fff;
+      transition:.2s;
+      margin-bottom:12px;
     }
 
-    .btn:hover { transform: translateY(-2px); }
-
-    .btn.secondary {
-      background: transparent;
-      border: 1px solid rgba(111,70,255,0.18);
-      color: #333;
+    input:focus{
+      border-color:var(--primary);
+      box-shadow:0 4px 18px rgba(111,70,255,0.16);
+      outline:none;
     }
 
-    body.dark .btn.secondary { color: #eee; border-color: #bbb3; }
-
-    input, select {
-      width: 100%;
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(20,20,30,0.12);
-      background: linear-gradient(180deg,#fff,#fafaff);
-      font-size: 14px;
-      margin-bottom: 10px;
-      transition: 0.15s;
+    .btn{
+      padding:10px 16px;
+      border-radius:12px;
+      border:0;
+      cursor:pointer;
+      font-weight:600;
+      background:linear-gradient(90deg,var(--primary),#9a7dff);
+      color:white;
+      box-shadow:0 8px 18px rgba(111,70,255,0.2);
+      transition:.2s;
     }
 
-    input:focus, select:focus {
-      box-shadow: 0 6px 20px rgba(111,70,255,0.08);
-      border-color: var(--primary);
-      transform: translateY(-1px);
+    .btn:hover{
+      transform:translateY(-2px);
     }
 
-    body.dark input { background:#262330; border-color:#444; color:white; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
+    .btn.secondary{
+      background:transparent;
+      border:1px solid rgba(50,50,70,0.1);
+      color:#333;
+      box-shadow:none;
     }
 
-    th {
-      padding: 10px;
-      font-size: 13px;
-      color: #555;
-      border-bottom: 2px solid rgba(0,0,0,0.08);
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
     }
 
-    td {
-      padding: 10px;
-      border-bottom: 1px dashed rgba(0,0,0,0.06);
+    th, td{
+      padding:10px 6px;
+      border-bottom:1px dashed rgba(0,0,0,0.06);
+      font-size:14px;
     }
 
-    body.dark th, body.dark td { border-color: #444; color: #ddd; }
-
-    .msg {
-      padding: 10px 12px;
-      border-radius: 10px;
-      margin-top: 10px;
-      font-weight: 600;
-      display: none;
+    th{
+      font-size:13px;
+      color:#555;
+      font-weight:700;
     }
 
-    .ok {
-      background: linear-gradient(90deg,#eaffee,#d6ffe3);
-      color:#0b5824;
-      border:1px solid rgba(12,150,75,0.12);
+    .chip{
+      padding:8px 12px;
+      border-radius:20px;
+      border:1px solid rgba(50,50,70,0.1);
+      cursor:pointer;
+      background:white;
+      transition:.2s;
     }
+    .chip:hover{ background:#f1efff; }
 
-    .err {
-      background: linear-gradient(90deg,#ffeaea,#ffdede);
-      color:#8a1f1f;
-      border:1px solid rgba(255,80,90,0.12);
+    .msg{
+      display:none;
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:10px;
+      font-weight:600;
     }
-
-    body.dark .ok { background:#0a3; color:white; }
-    body.dark .err { background:#500; color:white; }
+    .ok{
+      background:#e9fbe9;
+      border:1px solid #c7f2c7;
+      color:#0b6124;
+    }
+    .err{
+      background:#ffecec;
+      border:1px solid #ffb7b7;
+      color:#7a1b1b;
+    }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-
     <header>
+      <div class="logo">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke="#6f46ff" fill="none">
+          <path d="M3 21c6-6 6-12 18-18" stroke-linecap="round"/>
+          <path d="M6.5 16.5c3-3 4-6 7-9" stroke="#ff8db6" stroke-linecap="round"/>
+        </svg>
+      </div>
       <h1>Employee Leave System</h1>
-      <button class="toggle-dark" onclick="toggleDark()">🌙 Dark Mode</button>
     </header>
 
-    <!-- Dashboard stats -->
-    <div class="grid-2">
-      <div class="card">
-        <h2 id="statEmployees">0</h2>
-        <p>Total Employees</p>
-      </div>
-      <div class="card">
-        <h2 id="statLeaves">0</h2>
-        <p>Total Leave Requests</p>
-      </div>
-    </div>
+    <main class="grid">
 
-    <br>
-
-    <div class="grid-2">
-      <!-- Add Employee -->
-      <div class="card">
-        <h3>Add Employee</h3>
-
-        <label>Name</label>
-        <input id="emp_name" type="text" placeholder="Enter name">
-
-        <label>Total Leave Balance</label>
-        <input id="emp_balance" type="number" value="20">
-
-        <button class="btn" id="btnAdd">Add Employee</button>
-        <div id="addMsg" class="msg"></div>
-
-        <hr>
-
-        <h3>Employees</h3>
-        <div id="employeesArea"><em>Loading...</em></div>
-      </div>
-
-      <!-- Right Panel -->
+      <!-- LEFT SIDE -->
       <div>
+        <div class="card">
+          <h3>Add Employee</h3>
+          <label>Name</label>
+          <input id="emp_name" type="text">
 
-        <!-- Apply Leave -->
+          <label>Total Leave Balance</label>
+          <input id="emp_balance" type="number" value="20">
+
+          <button class="btn" id="btnAdd">Add</button>
+          <button class="btn secondary" id="btnRefresh">Refresh</button>
+          <div id="addMsg" class="msg"></div>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <h3>Employees</h3>
+          <div id="employeesArea"><em>Loading…</em></div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
         <div class="card">
           <h3>Apply Leave</h3>
 
@@ -254,123 +232,71 @@
           <div id="applyMsg" class="msg"></div>
         </div>
 
-        <br>
-
-        <!-- Leaves -->
         <div class="card">
-          <h3>Leaves</h3>
-          <div id="leavesArea"><em>Loading...</em></div>
+          <h3>Leave Requests</h3>
+          <div id="leavesArea"><em>Loading…</em></div>
         </div>
 
-        <br>
-
-        <!-- Summary -->
         <div class="card">
           <h3>Monthly Summary</h3>
 
           <label>Employee ID</label>
           <input id="sum_emp" type="number" value="1">
 
-          <label>Month</label>
+          <label>Month (1–12)</label>
           <input id="sum_month" type="number" value="12">
 
           <label>Year</label>
           <input id="sum_year" type="number" value="2025">
 
           <button class="btn" id="btnSummary">Show Summary</button>
-
           <div id="summaryArea" style="margin-top:10px"></div>
         </div>
       </div>
-    </div>
 
-    <br><br>
-
-    <footer style="text-align:center; color:var(--muted); font-size:14px">
-      Built with ❤️ by Aishwarya
-    </footer>
-
+    </main>
   </div>
 
 <script>
   const API = "https://employee-leave-system-x9i9.onrender.com";
 
-  function toggleDark() {
-    document.body.classList.toggle("dark");
+  function showMsg(el, txt, ok=true){
+    el.style.display="block";
+    el.textContent=txt;
+    el.className = "msg " + (ok ? "ok":"err");
+    setTimeout(()=> el.style.display="none", 3500);
   }
 
-  function showMsg(el, msg, ok=true) {
-    el.style.display = "block";
-    el.className = "msg " + (ok ? "ok" : "err");
-    el.textContent = msg;
-    setTimeout(() => el.style.display = "none", 3000);
+  async function fetchJSON(url, opts){
+    const r = await fetch(url, opts);
+    if(!r.ok) throw new Error(await r.text());
+    return r.json();
   }
 
-  async function fetchJSON(url, options) {
-    const res = await fetch(url, options);
-    if (!res.ok) throw new Error(await res.text());
-    return res.json();
-  }
-
-  async function loadEmployees() {
-    const area = document.getElementById("employeesArea");
-    area.innerHTML = "Loading...";
-
-    try {
-      const list = await fetchJSON(API + "/employees");
-      document.getElementById("statEmployees").innerText = list.length;
-
-      if (!list.length) {
-        area.innerHTML = "<em>No employees</em>";
-        return;
-      }
-
-      let html = `
-        <table>
-          <tr><th>ID</th><th>Name</th><th>Balance</th></tr>
-      `;
-
-      list.forEach(e => {
-        html += `
-          <tr>
-            <td>${e.employee_id}</td>
-            <td>${e.name}</td>
-            <td>${e.total_leave_balance}</td>
-          </tr>`;
+  async function loadEmployees(){
+    const area = employeesArea;
+    area.innerHTML="Loading…";
+    try{
+      const list = await fetchJSON(API+"/employees");
+      if(!list.length){ area.innerHTML="<em>No employees</em>"; return; }
+      let html="<table><tr><th>ID</th><th>Name</th><th>Balance</th></tr>";
+      list.forEach(e=>{
+        html+=`<tr><td>${e.employee_id}</td><td>${e.name}</td><td>${e.total_leave_balance}</td></tr>`;
       });
-
-      html += "</table>";
-      area.innerHTML = html;
-
-    } catch (err) {
-      area.innerHTML = `<div class='err'>Error loading employees</div>`;
-    }
+      html+="</table>";
+      area.innerHTML=html;
+    }catch{ area.innerHTML="<div class='err'>Error loading employees</div>"; }
   }
 
-  async function loadLeaves() {
-    const area = document.getElementById("leavesArea");
-    area.innerHTML = "Loading...";
-
-    try {
-      const list = await fetchJSON(API + "/leave");
-      document.getElementById("statLeaves").innerText = list.length;
-
-      if (!list.length) {
-        area.innerHTML = "<em>No leave requests</em>";
-        return;
-      }
-
-      let html = `
-        <table>
-          <tr>
-            <th>ID</th><th>Emp</th><th>Type</th><th>Start</th>
-            <th>End</th><th>Days</th><th>Status</th>
-          </tr>
-      `;
-
-      list.forEach(r => {
-        html += `
-        <tr>
+  async function loadLeaves(){
+    const area=leavesArea;
+    area.innerHTML="Loading…";
+    try{
+      const list=await fetchJSON(API+"/leave");
+      if(!list.length){ area.innerHTML="<em>No leaves</em>"; return;}
+      let html="<table><tr><th>ID</th><th>Emp</th><th>Type</th><th>Start</th><th>End</th><th>Days</th><th>Status</th></tr>";
+      list.forEach(r=>{
+        html+=`<tr>
           <td>${r.request_id}</td>
           <td>${r.employee_id}</td>
           <td>${r.leave_type}</td>
@@ -380,104 +306,73 @@
           <td>${r.status}</td>
         </tr>`;
       });
-
-      html += "</table>";
-      area.innerHTML = html;
-
-    } catch (err) {
-      area.innerHTML = `<div class='err'>Error loading leaves</div>`;
-    }
+      html+="</table>";
+      area.innerHTML=html;
+    }catch{ area.innerHTML="<div class='err'>Error loading requests</div>"; }
   }
 
-  document.getElementById("btnAdd").onclick = async () => {
-    const name = emp_name.value.trim();
-    const balance = parseInt(emp_balance.value);
+  btnAdd.onclick = async()=>{
+    const name=emp_name.value.trim();
+    const bal=+emp_balance.value;
+    if(!name) return showMsg(addMsg,"Name required",false);
 
-    if (!name) return showMsg(addMsg, "Name required", false);
-
-    try {
-      await fetchJSON(API + "/employees", {
+    try{
+      await fetchJSON(API+"/employees",{
         method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({name, total_leave_balance: balance})
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({name,total_leave_balance:bal})
       });
-
-      showMsg(addMsg, "Employee added");
+      showMsg(addMsg,"Employee added");
       loadEmployees();
-
-    } catch {
-      showMsg(addMsg, "Error adding employee", false);
+    }catch{
+      showMsg(addMsg,"Failed",false);
     }
   };
 
-  document.getElementById("btnApply").onclick = async () => {
-    const emp = +apply_emp.value;
-    const type = apply_type.value;
-    const start = apply_start.value;
-    const end = apply_end.value;
+  btnApply.onclick = async()=>{
+    const emp=+apply_emp.value;
+    const type=apply_type.value;
+    const start=apply_start.value;
+    const end=apply_end.value;
 
-    if (!emp || !start || !end)
-      return showMsg(applyMsg, "Fill all fields", false);
+    if(!emp||!start||!end) return showMsg(applyMsg,"Missing fields",false);
 
-    try {
-      await fetchJSON(API + "/leave", {
+    try{
+      await fetchJSON(API+"/leave",{
         method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({ employee_id: emp, leave_type: type, start_date:start, end_date:end })
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({employee_id:emp,leave_type:type,start_date:start,end_date:end})
       });
-
-      showMsg(applyMsg, "Leave applied");
-      loadLeaves();
-      loadEmployees();
-
-    } catch {
-      showMsg(applyMsg, "Error applying leave", false);
+      showMsg(applyMsg,"Leave requested");
+      loadLeaves(); loadEmployees();
+    }catch{
+      showMsg(applyMsg,"Failed",false);
     }
   };
 
-  document.getElementById("btnSummary").onclick = async () => {
-    const emp = +sum_emp.value;
-    const month = +sum_month.value;
-    const year = +sum_year.value;
-
-    const area = document.getElementById("summaryArea");
-    area.innerHTML = "Loading...";
-
-    try {
-      const list = await fetchJSON(
-        `${API}/summary?employee_id=${emp}&month=${month}&year=${year}`
-      );
-
-      if (!list.length) {
-        area.innerHTML = "<em>No summary records</em>";
-        return;
-      }
-
-      let html = `
-        <table>
-          <tr><th>ID</th><th>Type</th><th>Days</th><th>Status</th><th>Applied On</th></tr>
-      `;
-
-      list.forEach(r => {
-        html += `
-          <tr>
-            <td>${r.request_id}</td>
-            <td>${r.leave_type}</td>
-            <td>${r.days}</td>
-            <td>${r.status}</td>
-            <td>${r.applied_on}</td>
-          </tr>`;
+  btnSummary.onclick = async()=>{
+    const emp=sum_emp.value;
+    const month=sum_month.value;
+    const year=sum_year.value;
+    summaryArea.innerHTML="Loading…";
+    try{
+      const list=await fetchJSON(`${API}/summary?employee_id=${emp}&month=${month}&year=${year}`);
+      if(!list.length){ summaryArea.innerHTML="<em>No summary</em>"; return;}
+      let html="<table><tr><th>ID</th><th>Type</th><th>Days</th><th>Status</th><th>Applied On</th></tr>";
+      list.forEach(r=>{
+        html+=`<tr>
+        <td>${r.request_id}</td><td>${r.leave_type}</td><td>${r.days}</td><td>${r.status}</td><td>${r.applied_on}</td>
+        </tr>`;
       });
-
-      html += "</table>";
-      area.innerHTML = html;
-
-    } catch {
-      area.innerHTML = "<div class='err'>Error loading summary</div>";
+      html+="</table>";
+      summaryArea.innerHTML=html;
+    }catch{
+      summaryArea.innerHTML="<div class='err'>Error loading summary</div>";
     }
   };
 
-  // initial load
+  btnRefresh.onclick = ()=>{ loadEmployees(); loadLeaves(); };
+
   loadEmployees();
   loadLeaves();
 </script>
