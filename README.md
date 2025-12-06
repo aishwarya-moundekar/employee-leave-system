@@ -210,5 +210,5 @@ For major changes, please open an issue first.
 
 ## 📄 License
 
-MIT License.
-
+This project is licensed under the MIT License.
+Copyright © 2025 Aishwarya Moundekar.
