@@ -18,3 +18,12 @@ CREATE TABLE IF NOT EXISTS leave_requests (
     applied_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
+
+CREATE TABLE IF NOT EXISTS users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'employee') DEFAULT 'employee',
+    employee_id INT DEFAULT NULL,
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
